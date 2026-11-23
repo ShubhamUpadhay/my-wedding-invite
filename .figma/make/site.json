@@ -1,0 +1,10 @@
+{
+  "description": "A soothing, customizable Indian wedding invitation for sharing celebration details, photos, event schedules, and RSVP information with guests.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

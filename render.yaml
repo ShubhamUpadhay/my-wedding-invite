@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: wedding-rsvp-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
