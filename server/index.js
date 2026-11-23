@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 
+dotenv.config({ path: new URL("./.env", import.meta.url) });
 dotenv.config();
 
 const { MONGODB_URI, PORT = "8787", CORS_ORIGIN } = process.env;
@@ -54,6 +55,13 @@ app.post("/api/rsvps", async (request, response, next) => {
     const note = typeof request.body.note === "string" ? request.body.note.trim() : "";
     const guests = Number(request.body.guests);
 
+    console.info("[RSVP] Request received", {
+      hasName: name.length > 0,
+      attendance,
+      guests: attendance === "yes" ? guests : undefined,
+      hasNote: note.length > 0,
+    });
+
     if (name.length < 2 || name.length > 120) {
       response.status(400).json({ message: "Please enter your full name." });
       return;
@@ -81,6 +89,8 @@ app.post("/api/rsvps", async (request, response, next) => {
       note,
     });
 
+    console.info("[RSVP] Saved", { id: rsvp.id });
+
     response.status(201).json({ id: rsvp.id });
   } catch (error) {
     next(error);
@@ -88,7 +98,7 @@ app.post("/api/rsvps", async (request, response, next) => {
 });
 
 app.use((error, _request, response, _next) => {
-  console.error(error);
+  console.error("[RSVP] API error", error);
   response.status(500).json({ message: "We could not save your RSVP. Please try again." });
 });
 

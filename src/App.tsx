@@ -383,12 +383,20 @@ function Invitation() {
     const formData = new FormData(event.currentTarget);
     const payload = {
       name: String(formData.get("name") ?? ""),
-      attendance,
+      attendance: attending,
       guests: attending === "yes" ? Number(formData.get("guests")) : undefined,
       note: String(formData.get("note") ?? ""),
     };
 
+    console.info("[RSVP] Submit clicked", {
+      hasName: payload.name.trim().length > 0,
+      attendance: payload.attendance,
+      guests: payload.guests,
+      hasNote: payload.note.trim().length > 0,
+    });
+
     if (payload.name.trim().length < 2) {
+      console.warn("[RSVP] Blocked: name is missing or too short");
       setRsvpError("Please enter your full name.");
       return;
     }
@@ -404,12 +412,15 @@ function Invitation() {
       });
       const data = (await response.json().catch(() => null)) as { message?: string } | null;
 
+      console.info("[RSVP] API response", { status: response.status, ok: response.ok, data });
+
       if (!response.ok) {
         throw new Error(data?.message ?? "We could not save your RSVP. Please try again.");
       }
 
       setPreviewSent(true);
     } catch (error) {
+      console.error("[RSVP] Submission failed", error);
       setRsvpError(error instanceof Error ? error.message : "We could not save your RSVP. Please try again.");
     } finally {
       setIsSubmitting(false);
