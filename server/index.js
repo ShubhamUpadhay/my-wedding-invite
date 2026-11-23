@@ -94,6 +94,6 @@ app.use((error, _request, response, _next) => {
 
 await mongoose.connect(MONGODB_URI);
 
-app.listen(Number(PORT), () => {
+app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`RSVP API listening on port ${PORT}`);
 });
