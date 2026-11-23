@@ -1151,7 +1151,18 @@ input[type="checkbox"] {
 
 .rsvp-error {
   margin-top: 11px;
-  color: #a04f57;
+  padding: 10px 12px;
+  border: 1px solid #d9a7ac;
+  border-radius: 3px;
+  background: #fff1f1;
+  color: #98474f;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+.rsvp-status {
+  margin-top: 11px;
+  color: #8a7566;
   font-size: 10px;
   text-align: center;
 }

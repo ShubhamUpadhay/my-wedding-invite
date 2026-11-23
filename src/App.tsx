@@ -388,6 +388,11 @@ function Invitation() {
       note: String(formData.get("note") ?? ""),
     };
 
+    if (payload.name.trim().length < 2) {
+      setRsvpError("Please enter your full name.");
+      return;
+    }
+
     setIsSubmitting(true);
     setRsvpError("");
 
@@ -779,7 +784,7 @@ function Invitation() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={submitRsvp}>
+                  <form onSubmit={submitRsvp} noValidate>
                     <div className="form-heading">
                       <h3>{t("Will you be there?")}</h3>
                       <span>{t("RSVP")}</span>
@@ -787,7 +792,6 @@ function Invitation() {
                     <label>
                       {t("Your name")}
                       <input
-                        required
                         name="name"
                         placeholder={t("First & last name")}
                         autoComplete="name"
@@ -848,6 +852,11 @@ function Invitation() {
                     >
                       {t(isSubmitting ? "Saving your RSVP…" : "Send my RSVP")} <Icon name="arrow" size={17} />
                     </button>
+                    {isSubmitting && (
+                      <p className="rsvp-status" role="status">
+                        {t("Saving your RSVP…")}
+                      </p>
+                    )}
                     {rsvpError && <p className="rsvp-error" role="alert">{t(rsvpError)}</p>}
                   </form>
                 )}

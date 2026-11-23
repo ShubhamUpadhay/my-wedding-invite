@@ -198,6 +198,7 @@ export const hindi: Record<string, string> = {
   "Send my RSVP": "उपस्थिति की पुष्टि भेजें",
   "Saving your RSVP…": "उपस्थिति की पुष्टि सहेजी जा रही है…",
   "We could not save your RSVP. Please try again.": "आपकी उपस्थिति की पुष्टि सहेजी नहीं जा सकी। कृपया फिर से प्रयास करें।",
+  "Please enter your full name.": "कृपया अपना पूरा नाम दर्ज करें।",
   "Here’s to love, laughter, and a lifetime of together.": "प्यार, हँसी और जीवन भर के साथ के नाम।",
   "We can’t wait to": "बेसब्री से इंतज़ार है",
   "celebrate with you.": "आपके साथ जश्न का।",
