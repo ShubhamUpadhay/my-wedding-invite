@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const rsvpSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 120 },
+    phone: { type: String, required: true, trim: true, maxlength: 30 },
     attendance: { type: String, required: true, enum: ["yes", "no"] },
     guests: { type: Number, min: 1, max: 6 },
     note: { type: String, trim: true, maxlength: 2000, default: "" },
@@ -31,12 +32,18 @@ export default async function handler(request, response) {
 
   try {
     const name = typeof request.body?.name === "string" ? request.body.name.trim() : "";
+    const phone = typeof request.body?.phone === "string" ? request.body.phone.trim() : "";
     const attendance = request.body?.attendance;
     const note = typeof request.body?.note === "string" ? request.body.note.trim() : "";
     const guests = Number(request.body?.guests);
 
     if (name.length < 2 || name.length > 120) {
       response.status(400).json({ message: "Please enter your full name." });
+      return;
+    }
+
+    if (!/^[+\d][\d\s()\-]{6,28}$/.test(phone)) {
+      response.status(400).json({ message: "Please enter a valid phone number." });
       return;
     }
 
@@ -58,6 +65,7 @@ export default async function handler(request, response) {
     await connectToDatabase();
     const rsvp = await Rsvp.create({
       name,
+      phone,
       attendance,
       guests: attendance === "yes" ? guests : undefined,
       note,

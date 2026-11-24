@@ -1059,6 +1059,48 @@
   display: block;
 }
 
+.rsvp-panel form {
+  position: relative;
+}
+
+.rsvp-panel form.is-submitting > :not(.rsvp-loading-overlay) {
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.rsvp-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  border-radius: 4px;
+  background: #fffaf5a8;
+  color: #8c6570;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(4px);
+}
+
+.rsvp-loader {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #ead9ce;
+  border-top-color: #b67d95;
+  border-radius: 50%;
+  animation: rsvp-spin 0.8s linear infinite;
+}
+
+@keyframes rsvp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .rsvp-panel label>span,
 .rsvp-panel legend>span {
   color: #a7a092;

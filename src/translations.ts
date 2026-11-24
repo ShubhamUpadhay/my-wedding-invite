@@ -171,6 +171,9 @@ export const hindi: Record<string, string> = {
   "A little rehearsal — responses aren’t being collected yet.":
     "यह केवल पूर्वावलोकन है — अभी जवाब एकत्र नहीं किए जा रहे हैं।",
   "First & last name": "पूरा नाम",
+  "Phone number": "फ़ोन नंबर",
+  "+91 98765 43210": "+91 98765 43210",
+  "Please enter a valid phone number.": "कृपया मान्य फ़ोन नंबर दर्ज करें।",
   "Email address": "ईमेल पता",
   "you@example.com": "you@example.com",
   "Will you be joining us?": "क्या आप हमारे साथ शामिल होंगे?",

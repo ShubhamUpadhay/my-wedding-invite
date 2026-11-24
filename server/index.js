@@ -35,6 +35,7 @@ app.use(express.json({ limit: "20kb" }));
 const rsvpSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 120 },
+    phone: { type: String, required: true, trim: true, maxlength: 30 },
     attendance: { type: String, required: true, enum: ["yes", "no"] },
     guests: { type: Number, min: 1, max: 6 },
     note: { type: String, trim: true, maxlength: 2000, default: "" },
@@ -51,12 +52,14 @@ app.get("/api/health", (_request, response) => {
 app.post("/api/rsvps", async (request, response, next) => {
   try {
     const name = typeof request.body.name === "string" ? request.body.name.trim() : "";
+    const phone = typeof request.body.phone === "string" ? request.body.phone.trim() : "";
     const attendance = request.body.attendance;
     const note = typeof request.body.note === "string" ? request.body.note.trim() : "";
     const guests = Number(request.body.guests);
 
     console.info("[RSVP] Request received", {
       hasName: name.length > 0,
+      hasPhone: phone.length > 0,
       attendance,
       guests: attendance === "yes" ? guests : undefined,
       hasNote: note.length > 0,
@@ -64,6 +67,11 @@ app.post("/api/rsvps", async (request, response, next) => {
 
     if (name.length < 2 || name.length > 120) {
       response.status(400).json({ message: "Please enter your full name." });
+      return;
+    }
+
+    if (!/^[+\d][\d\s()\-]{6,28}$/.test(phone)) {
+      response.status(400).json({ message: "Please enter a valid phone number." });
       return;
     }
 
@@ -84,6 +92,7 @@ app.post("/api/rsvps", async (request, response, next) => {
 
     const rsvp = await Rsvp.create({
       name,
+      phone,
       attendance,
       guests: attendance === "yes" ? guests : undefined,
       note,

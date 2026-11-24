@@ -383,6 +383,7 @@ function Invitation() {
     const formData = new FormData(event.currentTarget);
     const payload = {
       name: String(formData.get("name") ?? ""),
+      phone: String(formData.get("phone") ?? ""),
       attendance: attending,
       guests: attending === "yes" ? Number(formData.get("guests")) : undefined,
       note: String(formData.get("note") ?? ""),
@@ -390,6 +391,7 @@ function Invitation() {
 
     console.info("[RSVP] Submit clicked", {
       hasName: payload.name.trim().length > 0,
+      hasPhone: payload.phone.trim().length > 0,
       attendance: payload.attendance,
       guests: payload.guests,
       hasNote: payload.note.trim().length > 0,
@@ -398,6 +400,11 @@ function Invitation() {
     if (payload.name.trim().length < 2) {
       console.warn("[RSVP] Blocked: name is missing or too short");
       setRsvpError("Please enter your full name.");
+      return;
+    }
+
+    if (!/^[+\d][\d\s()\-]{6,28}$/.test(payload.phone.trim())) {
+      setRsvpError("Please enter a valid phone number.");
       return;
     }
 
@@ -795,7 +802,12 @@ function Invitation() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={submitRsvp} noValidate>
+                  <form
+                    onSubmit={submitRsvp}
+                    noValidate
+                    className={isSubmitting ? "is-submitting" : ""}
+                    aria-busy={isSubmitting}
+                  >
                     <div className="form-heading">
                       <h3>{t("Will you be there?")}</h3>
                       <span>{t("RSVP")}</span>
@@ -807,6 +819,17 @@ function Invitation() {
                         placeholder={t("First & last name")}
                         autoComplete="name"
                         maxLength={120}
+                      />
+                    </label>
+                    <label>
+                      {t("Phone number")}
+                      <input
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        placeholder={t("+91 98765 43210")}
+                        autoComplete="tel"
+                        maxLength={30}
                       />
                     </label>
                     <fieldset>
@@ -863,12 +886,13 @@ function Invitation() {
                     >
                       {t(isSubmitting ? "Saving your RSVP…" : "Send my RSVP")} <Icon name="arrow" size={17} />
                     </button>
-                    {isSubmitting && (
-                      <p className="rsvp-status" role="status">
-                        {t("Saving your RSVP…")}
-                      </p>
-                    )}
                     {rsvpError && <p className="rsvp-error" role="alert">{t(rsvpError)}</p>}
+                    {isSubmitting && (
+                      <div className="rsvp-loading-overlay" role="status" aria-live="polite">
+                        <span className="rsvp-loader" aria-hidden="true" />
+                        <span>{t("Saving your RSVP…")}</span>
+                      </div>
+                    )}
                   </form>
                 )}
               </div>
