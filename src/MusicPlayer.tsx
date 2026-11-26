@@ -6,12 +6,14 @@ export default function MusicPlayer() {
   const context = useRef<AudioContext | null>(null);
   const buffer = useRef<AudioBuffer | null>(null);
   const source = useRef<AudioBufferSourceNode | null>(null);
+  const gain = useRef<GainNode | null>(null);
   const request = useRef<AbortController | null>(null);
   const offset = useRef(0);
   const startedAt = useRef(0);
   const mounted = useRef(true);
   const [playing, setPlaying] = useState(false);
   const [pending, setPending] = useState(false);
+  const [stopping, setStopping] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -27,12 +29,15 @@ export default function MusicPlayer() {
 
   async function toggleMusic() {
     if (pending) return;
-    if (source.current && context.current) {
-      offset.current += context.current.currentTime - startedAt.current;
-      source.current.stop();
-      source.current.disconnect();
-      source.current = null;
-      void context.current.suspend();
+    if (source.current && context.current && gain.current) {
+      const now = context.current.currentTime;
+      offset.current += now - startedAt.current + 2;
+      gain.current.gain.cancelScheduledValues(now);
+      gain.current.gain.setValueAtTime(gain.current.gain.value, now);
+      gain.current.gain.linearRampToValueAtTime(0, now + 2);
+      source.current.stop(now + 2);
+      setStopping(true);
+      setPending(true);
       setPlaying(false);
       return;
     }
@@ -46,7 +51,7 @@ export default function MusicPlayer() {
       if (!buffer.current) {
         const controller = new AbortController();
         request.current = controller;
-        const response = await fetch("/audio/forever-in-bloom.wav", {
+        const response = await fetch("/audio/mangal-rang.mp3", {
           signal: controller.signal,
         });
         if (!response.ok) throw new Error("Unable to load music");
@@ -58,16 +63,26 @@ export default function MusicPlayer() {
       track.buffer = buffer.current;
       track.loop = true;
       volume.gain.setValueAtTime(0, audioContext.currentTime);
-      volume.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 1);
+      volume.gain.linearRampToValueAtTime(0.16, audioContext.currentTime + 2);
       track.connect(volume);
       volume.connect(audioContext.destination);
       track.onended = () => {
         track.disconnect();
         volume.disconnect();
+        if (source.current === track) {
+          source.current = null;
+          gain.current = null;
+          if (mounted.current) {
+            void audioContext.suspend();
+            setStopping(false);
+            setPending(false);
+          }
+        }
       };
       track.start(0, offset.current % buffer.current.duration);
       startedAt.current = audioContext.currentTime;
       source.current = track;
+      gain.current = volume;
       setPlaying(true);
     } catch {
       if (mounted.current) {
@@ -94,9 +109,7 @@ export default function MusicPlayer() {
         aria-pressed={playing}
         aria-busy={pending}
         disabled={pending}
-        title={t(
-          playing ? "Mute music · Forever in Bloom" : "Play a little music · Forever in Bloom",
-        )}
+        title={t(playing ? "Mute background music" : "Play background music")}
       >
         <span className="music-symbol">
           <svg
@@ -120,7 +133,7 @@ export default function MusicPlayer() {
             )}
           </svg>
         </span>
-        <span>{t(pending ? "Starting…" : playing ? "Music on" : "Play music")}</span>
+        <span>{t(stopping ? "Fading out…" : pending ? "Starting…" : playing ? "Music on" : "Play music")}</span>
         <span className="music-bars" aria-hidden="true">
           <i />
           <i />

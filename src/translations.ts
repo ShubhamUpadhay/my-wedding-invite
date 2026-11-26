@@ -208,6 +208,7 @@ export const hindi: Record<string, string> = {
   "Made with love. Meant to be shared.": "प्यार से बना। अपनों के लिए।",
   "See you at the celebration": "समारोह में मिलते हैं",
   "Music couldn’t start. Tap to try again.": "संगीत शुरू नहीं हो सका। फिर कोशिश करने के लिए दबाएँ।",
+  "Fading out…": "संगीत धीरे-धीरे बंद हो रहा है…",
   "Mute background music": "संगीत बंद करें",
   "Play background music": "संगीत चलाएँ",
   "Mute music · Forever in Bloom": "संगीत बंद करें · फ़ॉरएवर इन ब्लूम",
