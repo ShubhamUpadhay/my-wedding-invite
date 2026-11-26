@@ -13,5 +13,6 @@ The invitation and RSVP API deploy together on **Vercel**. RSVP data is stored i
 
 - Pull requests and pushes to `main` run `.github/workflows/ci.yml`.
 - Vercel's GitHub integration deploys every push to `main` to production, after the Vercel build succeeds.
+- `vercel.json` requires browsers to revalidate the page and unversioned images and audio on each visit. Vite versions the JavaScript and CSS filenames automatically; visitors do not need to clear their browser cache after a deployment.
 
 `MONGODB_URI` belongs only in Vercel's environment settings—never in GitHub Actions or frontend variables.
