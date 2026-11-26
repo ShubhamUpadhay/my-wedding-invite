@@ -13,7 +13,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = language;
     document.title =
-      language === "hi" ? "हमारा साथ — विवाह निमंत्रण" : "Our Forever — A Wedding Celebration";
+      language === "hi"
+        ? "शुभम् संग सैंजली — विवाह निमंत्रण"
+        : "Shubham & Sainjali's Wedding Invitation";
   }, [language]);
   return (
     <LanguageContext.Provider
