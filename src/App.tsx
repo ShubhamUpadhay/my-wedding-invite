@@ -437,6 +437,12 @@ function Invitation() {
     <>
       <MusicPlayer />
       <LanguageToggle />
+      {opened && (
+        <a className="floating-rsvp" href="#rsvp">
+          <Icon name="heart" size={18} />
+          {t("RSVP")}
+        </a>
+      )}
       {!opened ? (
         <Opening onOpen={finishOpening} />
       ) : (
